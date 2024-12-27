@@ -44,8 +44,8 @@ model User {
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
   // FK to Position
-  positionID Int
-  position Position @relation(fields: [positionID], references: [id])
+  positionID Int?
+  position Position? @relation(fields: [positionID], references: [id])
   // Relation at Booking
   createdBookingBy Booking[] @relation(name: "BookingCreatedBy")
   cancalledBookingBy Booking [] @relation(name: "BookingCancalledBy")
