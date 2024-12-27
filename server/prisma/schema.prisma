@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(150)
+  position Position[]
+}
+
+model Position {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(150)
+  // FK to Department
+  departmentId Int
+  department Department @relation(fields: [departmentId], references: [id])
+  user User[]
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  fullName String @db.VarChar(150)
+  username String @unique @db.VarChar(80)
+  email String @unique
+  mobile String? @db.VarChar(12)
+  password String
+  birthDate DateTime
+  image String?
+  isStaff Boolean @default(false)
+  isAdmin Boolean @default(false)
+  staffCode String? @db.VarChar(20)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  // FK to Position
+  positionID Int
+  position Position @relation(fields: [positionID], references: [id])
+  // Relation at Booking
+  createdBookingBy Booking[] @relation(name: "BookingCreatedBy")
+  cancalledBookingBy Booking [] @relation(name: "BookingCancalledBy")
+  // Relation at Announcement
+  createdAnnouncementBy Announcement[] @relation(name: "CreatedAnnouncementByUser")
+  updatedAnnouncementBy Announcement[] @relation(name: "UpdatedAnnouncementByUser")
+
+}
+
+
+model Room {
+  id Int @id @default(autoincrement())
+  floor Int
+  coverImage String?
+  openTime String
+  closeTime String
+  bookingDuration Int // store data in minutes
+  deatail String? @db.Text()
+  isActive Boolean @default(true)
+  roomImage RoomImage[]
+  roomTable RoomTable[]
+  booking Booking[]
+}
+
+model RoomImage {
+  id Int @id @default(autoincrement())
+  image String
+  // FK to Room
+  roomId Int
+  room  Room @relation(fields: [roomId], references: [id])
+}
+
+
+model RoomType {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(150)
+  detail String? @db.Text()
+  isActive Boolean @default(true)
+  table Table[]
+}
+
+model Table {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(150)
+  width Decimal
+  lenght Decimal
+  // FK to RoomType
+  typeId Int
+  roomType RoomType @relation(fields: [typeId], references: [id])
+  detail String? @db.Text()
+  isActive Boolean @default(true)
+  roomTable RoomTable[]
+}
+
+model RoomTable {
+  id Int @id @default(autoincrement())
+  // FK to Room
+  roomId Int
+  room Room @relation(fields: [roomId], references: [id])
+  // FK to Table
+  tableId Int
+  table Table @relation(fields: [tableId], references: [id])
+}
+
+model Booking {
+  id Int @id @default(autoincrement())
+  // FK to Room
+  roomId Int
+  room Room @relation(fields: [roomId], references: [id])
+  // FK to User who created booking
+  bookingBy Int
+  // FK to User role staff who cancalled thier booking
+  cancelledBy Int
+
+  bookingByUser User @relation(name: "BookingCreatedBy", fields: [bookingBy], references: [id])
+  cancalledByUser User @relation(name: "BookingCancalledBy", fields: [cancelledBy], references: [id])
+}
+
+model Announcement {
+  id Int @id @default(autoincrement())
+  title String @db.VarChar(100)
+  content String @db.Text()
+  // FK to User staff who created announcement
+  createdBy Int
+  createdByUser User @relation(name: "CreatedAnnouncementByUser", fields: [createdBy], references: [id])
+  // FK to User staff who update announcement
+  updatedBy Int
+  updatedByUser User @relation(name: "UpdatedAnnouncementByUser", fields: [updatedBy], references: [id])
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}
