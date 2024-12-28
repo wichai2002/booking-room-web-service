@@ -1,26 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller, 
+  Get, 
+  Post, 
+  Body, 
+  Patch, 
+  Param, 
+  Delete, 
+  NotFoundException
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthenticationDto } from './dto/authen-user.dto'
+import { UserEntity } from './entities/user.entity';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto);
     return this.userService.create(createUserDto);
   }
 
+  @ApiResponse({ status: 200, description: 'Get all user', type: UserEntity, isArray: true })
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  async findAll(): Promise<UserEntity[]> {
+    return await this.userService.findAll();
   }
 
+  @ApiResponse({ status: 200, description: 'Get user by id', type: UserEntity })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const user = await this.userService.findOne(+id);
+    return user;
   }
 
   @Patch(':id')
@@ -33,10 +48,8 @@ export class UserController {
     return this.userService.remove(+id);
   }
 
-  @Post()
+  @Post('/authen')
   authentication(@Body() authenticationDto: AuthenticationDto) {
-    const username = authenticationDto.username;
-    const password = authenticationDto.username;
-    return "Login"
+    return this.userService.authen(authenticationDto);
   }
 }

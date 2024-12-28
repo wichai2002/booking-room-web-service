@@ -58,6 +58,7 @@ model User {
 
 model Room {
   id Int @id @default(autoincrement())
+  name String @db.VarChar(150)
   floor Int
   coverImage String?
   openTime String
@@ -65,6 +66,11 @@ model Room {
   bookingDuration Int // store data in minutes
   deatail String? @db.Text()
   isActive Boolean @default(true)
+
+    // FK to RoomType
+  typeId Int
+  roomType RoomType @relation(fields: [typeId], references: [id])
+
   roomImage RoomImage[]
   roomTable RoomTable[]
   booking Booking[]
@@ -84,7 +90,7 @@ model RoomType {
   name String @db.VarChar(150)
   detail String? @db.Text()
   isActive Boolean @default(true)
-  table Table[]
+  room Room[]
 }
 
 model Table {
@@ -92,9 +98,6 @@ model Table {
   name String @db.VarChar(150)
   width Decimal
   lenght Decimal
-  // FK to RoomType
-  typeId Int
-  roomType RoomType @relation(fields: [typeId], references: [id])
   detail String? @db.Text()
   isActive Boolean @default(true)
   roomTable RoomTable[]
@@ -110,18 +113,33 @@ model RoomTable {
   table Table @relation(fields: [tableId], references: [id])
 }
 
+enum bookingStatus {
+  PENDING
+  BOOKED
+  CANCELLED
+  COMPLETED
+}
+
 model Booking {
   id Int @id @default(autoincrement())
   // FK to Room
   roomId Int
   room Room @relation(fields: [roomId], references: [id])
+  remark String? @db.Text()
+  status bookingStatus @default(PENDING)
   // FK to User who created booking
   bookingBy Int
   // FK to User role staff who cancalled thier booking
-  cancelledBy Int
+  cancelledBy Int?
 
   bookingByUser User @relation(name: "BookingCreatedBy", fields: [bookingBy], references: [id])
-  cancalledByUser User @relation(name: "BookingCancalledBy", fields: [cancelledBy], references: [id])
+  cancalledByUser User? @relation(name: "BookingCancalledBy", fields: [cancelledBy], references: [id])
+
+  startTime DateTime
+  endTime DateTime
+
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 }
 
 model Announcement {
