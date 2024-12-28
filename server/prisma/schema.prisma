@@ -130,10 +130,16 @@ model Booking {
   // FK to User who created booking
   bookingBy Int
   // FK to User role staff who cancalled thier booking
-  cancelledBy Int
+  cancelledBy Int?
 
   bookingByUser User @relation(name: "BookingCreatedBy", fields: [bookingBy], references: [id])
-  cancalledByUser User @relation(name: "BookingCancalledBy", fields: [cancelledBy], references: [id])
+  cancalledByUser User? @relation(name: "BookingCancalledBy", fields: [cancelledBy], references: [id])
+
+  startTime DateTime
+  endTime DateTime
+
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 }
 
 model Announcement {
