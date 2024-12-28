@@ -113,11 +113,20 @@ model RoomTable {
   table Table @relation(fields: [tableId], references: [id])
 }
 
+enum bookingStatus {
+  PENDING
+  BOOKED
+  CANCELLED
+  COMPLETED
+}
+
 model Booking {
   id Int @id @default(autoincrement())
   // FK to Room
   roomId Int
   room Room @relation(fields: [roomId], references: [id])
+  remark String? @db.Text()
+  status bookingStatus @default(PENDING)
   // FK to User who created booking
   bookingBy Int
   // FK to User role staff who cancalled thier booking
