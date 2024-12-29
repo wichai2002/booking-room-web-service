@@ -11,7 +11,7 @@ export interface IRegister {
     password: string;
     email: string;
     mobile: string;
-    birhtdate: Date;
+    birhtdate: string;
     image?: string | null;
     isStaff: boolean;
     isAdmin: boolean;
