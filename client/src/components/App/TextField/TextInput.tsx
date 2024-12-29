@@ -6,7 +6,7 @@ interface TextInputProps {
     isRequire?: boolean
     className?: string
     placeholder?: string
-    value: any;
+    value?: any;
     label?: string
     labelClassName?: string
     min?: number;
@@ -21,7 +21,7 @@ const TextInput: React.FC<TextInputProps> = ({
     isRequire = false,
     className,
     placeholder = "",
-    value,
+    value=null,
     label,
     labelClassName,
     max,

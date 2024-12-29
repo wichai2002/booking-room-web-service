@@ -23,6 +23,13 @@ const RegisterForm = () => {
         }
     );
 
+    const [isAccept, setIsAccept] = useState<boolean>(false);
+
+    function handleChangeIsAccept(event: React.ChangeEvent<HTMLInputElement>) {
+        const { checked } = event.target;
+        setIsAccept(checked)
+    }
+
     function handleChangeForm(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
         setUser({ ...user, [name]: value });
@@ -130,9 +137,10 @@ const RegisterForm = () => {
                             <label htmlFor="choose department">Department</label>
                             <select
                                 id="countries"
+                                defaultValue=""
                                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-800 dark:gray-800 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
-                                <option selected>Choose a country</option>
+                                <option defaultValue="" selected>Choose a country</option>
                                 <option value="US">United States</option>
                                 <option value="CA">Canada</option>
                                 <option value="FR">France</option>
@@ -144,9 +152,10 @@ const RegisterForm = () => {
                             <label htmlFor="choose">Position</label>
                             <select
                                 id="countries"
+                                defaultValue=""
                                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-800 dark:gray-800 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
-                                <option selected>Choose a country</option>
+                                <option defaultValue="D" selected>Choose a country</option>
                                 <option value="US">United States</option>
                                 <option value="CA">Canada</option>
                                 <option value="FR">France</option>
@@ -167,7 +176,43 @@ const RegisterForm = () => {
                             />
                         </div>
                     </>
+
                 )}
+
+
+
+                <div className="mt-5">
+                    <hr />
+                    <div className="mt-2 mb-2">
+                        <p className="text-justify text-sm">
+                            At Wichai Web Service, we value your privacy and are committed to protecting your personal information. This Privacy Policy outlines how we collect,
+                            use, and safeguard your information when you visit our website,
+                            <b>https://chatgpt.com/</b>,
+                            or use our services.
+                        </p>
+                    </div>
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={isAccept}
+                            onChange={handleChangeIsAccept}
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <label htmlFor="checked-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-800">
+                            Accept Policy
+                        </label>
+                    </div>
+                </div>
+
+                <div className="mt-12">
+                    <button
+                        type="button"
+                        className={`w-full shadow-xl py-2.5 px-4 text-sm tracking-wide rounded-md text-white focus:outline-none ${isAccept ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-300'}`}
+                        disabled={!isAccept}
+                    >
+                        Sign Up
+                    </button>
+                </div>
             </form>
         </>
     )

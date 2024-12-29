@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 
-// import { useLocation } from "react-router-dom";
-
-
+// hooks
+import useAutheCheck from "../../../hooks/auth/auth";
 
 const NavBar = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -20,6 +19,16 @@ const NavBar = () => {
         setDropdownOpen(false);
     };
 
+    const params = new URLSearchParams(window.location.search);
+    
+    // 404 page
+    if (params.has('page', '404')) {
+        return <></>
+    }
+
+    // hook for check authen tication
+    useAutheCheck()
+    
     return (
         <nav className="dark:bg-gray-900 text-white">
             <div className="container mx-auto flex justify-between items-center px-4 py-3">

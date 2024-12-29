@@ -13,11 +13,7 @@ const $http = axios.create({
 
 $http.interceptors.response.use(
     (response) => response,
-    (ctx) => {
-        if (ctx.response.status === 404) {
-            console.log('404');
-        }
-    }
+    (ctx) => { return ctx.response}
 );
 
 

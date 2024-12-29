@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+// api
+import { LoginApi } from "../../api/login.api";
+
 const LoginForm = () => {
 
     const [passwodDisPlay, setPasswordDisPlay] = useState<string>("password");
@@ -21,9 +24,28 @@ const LoginForm = () => {
         setPassword(event.target.value)
     }
 
+    async function handleLogin(event: React.FormEvent) {
+        event.preventDefault()
+
+        const loginApi = LoginApi()
+
+        const data = {
+            username: username,
+            password: password
+        }
+
+        const logined = await loginApi.login(data);
+
+        if (logined == true) {
+            window.location.href = '/'
+        }
+
+        alert(logined.message)
+    }
+
     return (
         <>
-            <form>
+            <form onSubmit={handleLogin}>
                 <div className="mb-12">
                     <h3 className="text-gray-800 text-3xl font-extrabold">Sign in</h3>
                     <p className="text-sm mt-4 text-gray-800">
@@ -45,6 +67,7 @@ const LoginForm = () => {
                             minLength={6}
                             maxLength={100}
                         />
+
                     </div>
                 </div>
 
@@ -80,14 +103,13 @@ const LoginForm = () => {
                 </div>
 
                 <div className="mt-12">
-                    <button type="button" className="w-full shadow-xl py-2.5 px-4 text-sm tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+                    <button type="submit" className="w-full shadow-xl py-2.5 px-4 text-sm tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
                         Sign in
                     </button>
                 </div>
                 <div className="space-x-6 flex justify-center mt-6">
                 </div>
             </form>
-
         </>
     )
 }
