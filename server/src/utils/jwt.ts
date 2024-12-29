@@ -3,11 +3,13 @@ import { UserEntity } from '../user/entities/user.entity'
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "cri3LIQxxkLmil05";
 
+import { IJwtPayload } from 'src/types/jwtPayload';
+
 const jwt = require('jsonwebtoken');
 
 // Function to generate JWT token
 export async function generateJwtToken(user: UserEntity) {
-  const playload = {
+  const playload: IJwtPayload = {
     id: user.id,
     username: user.username,
     isStaff: user.isStaff,
