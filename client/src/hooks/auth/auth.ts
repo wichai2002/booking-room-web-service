@@ -1,9 +1,20 @@
 import { useEffect } from 'react';
+import { getMeApi } from '../../api/me';
+
 
 const useAutheCheck = () => {
-    function verifyToken(token: string) {
-        console.log(token);
-        return true
+
+    function resetAuth(){
+        localStorage.removeItem('token')
+    }
+
+    async function verifyToken() {
+        const meApi = getMeApi();
+        try {
+            await meApi.getMe()
+        }catch (error) {
+            resetAuth()
+        }
     }
 
     useEffect(() => {
@@ -13,11 +24,9 @@ const useAutheCheck = () => {
             console.log("No authentication");
             window.location.href = '/login'
         } else {
-            verifyToken(getToken)
+            verifyToken()
         }
-
     });
-
 }
 
 export default useAutheCheck

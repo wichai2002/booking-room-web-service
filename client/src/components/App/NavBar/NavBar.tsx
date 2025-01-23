@@ -1,9 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from 'react-redux'
 
 // hooks
-import useAutheCheck from "../../../hooks/auth/auth";
+// import useAutheCheck from "../../../hooks/auth/auth";
+// import { IUserPayload } from "../../../types/interfaces/user.interface";
 
-const NavBar = () => {
+import { verifyToken } from "../../../reducers/auth/action";
+import { IUserPayload } from "../../../types/interfaces/user.interface";
+
+interface INavBarProps {
+    auth: IUserPayload,
+    dispatch: any
+}
+
+
+const NavBar: React.FC<INavBarProps> = ({auth, dispatch}) => {
+
+    useEffect(() => {
+        dispatch(verifyToken())
+    }, [])
+
+    
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -25,9 +42,12 @@ const NavBar = () => {
     if (params.has('page', '404')) {
         return <></>
     }
+  
 
     // hook for check authen tication
-    useAutheCheck()
+
+    // dispatch(verifyToken())
+    console.log("LOGGG",auth);
     
     return (
         <nav className="dark:bg-gray-900 text-white">
@@ -105,4 +125,10 @@ const NavBar = () => {
     );
 };
 
-export default NavBar;
+const mapStateToProps = function(state: any) {
+    return {
+      auth: state.auth || {}
+    }
+  }
+
+export default connect(mapStateToProps)(NavBar);

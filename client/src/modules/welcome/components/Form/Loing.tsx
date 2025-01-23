@@ -38,9 +38,10 @@ const LoginForm = () => {
 
         if (logined == true) {
             window.location.href = '/'
-        }
+        }else{
+            alert(logined.message)
+        }        
 
-        alert(logined.message)
     }
 
     return (
