@@ -5,7 +5,8 @@ export interface IUserPayload {
     fullName: string;
     isStaff: boolean;
     isAdmin: boolean;
-    staffCode?: string
+    staffCode?: string;
+    image?: string | null
     iat?: number
     exp?: number
 }

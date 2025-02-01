@@ -1,20 +1,23 @@
 import React from "react";
+import { IRoom } from "../../../modules/room/types/room.type";
 
 
 interface IRoomCardImageV1Props {
-    data: any
+    data: IRoom
 }
 
-const RoomCardImageV1 = () => {
+const RoomCardImageV1: React.FC<IRoomCardImageV1Props> = ({data}) => {
+    const defaultCoverImage: string = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb059sWW_SdTPurdrcdo6-YmB-WF-JpJD7zD-rG_QiR9NLfm7IGNPNg1nvmKbugk6NjQY&usqp=CAU"
+
     return (
         <div className="max-w-md bg-white border border-gray-400 rounded-lg shadow dark:bg-gray-100 dark:border-gray-700">
-            <img className="rounded-t-lg" src="https://www.ikea.com/ext/ingkadam/m/7262b24abd9b498f/original/PH200284.jpg" alt="" />
+            <img className="rounded-t-lg" src={data.coverImage || defaultCoverImage} alt="" />
             <div className="p-5">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">Noteworthy technology acquisitions 2021</h5>
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">{data.name}</h5>
 
                 <div className="">
                     <p className="mb-3 font-normal text-gray-700 dark:text-gray-500 ">
-                        Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.
+                        {data.detail || "No detail"}
                     </p>
                 </div>
                 <div className="flex justify-items-center">

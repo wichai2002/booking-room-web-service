@@ -8,7 +8,8 @@ const initialState: IUserPayload = {
     fullName: '',
     isStaff: false,
     isAdmin: false,
-    staffCode: ''
+    staffCode: '',
+    image: null
 };
 
 

@@ -3,8 +3,6 @@ import AppRouter from "./routers";
 
 import NavBar from "../components/App/NavBar/NavBar";
 
-import { connect } from "react-redux";
-
 function App() {
   const path = window.location.pathname;
 

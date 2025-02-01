@@ -4,7 +4,7 @@ import { BASE_URL } from '../constans';
 
 const $http = axios.create({
     baseURL: BASE_URL,
-    timeout: 600,
+    timeout: 3000,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -25,10 +25,7 @@ $http.interceptors.request.use(
 
 $http.interceptors.response.use(
     (response) => {
-        return response
-    },
-    (ctx) => { 
-        const response = ctx.response
+        console.log("Response 1: ", response);
 
         if (response.status === 401 && window.location.pathname !== '/login'){
             alert(`Invalid token or token expired. Please re-login again`)
@@ -38,6 +35,9 @@ $http.interceptors.response.use(
 
         return response
     },
+    (ctx) => {
+        return ctx.response
+    }
 );
 
 export { $http };
