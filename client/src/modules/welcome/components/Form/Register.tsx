@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // types
 import { IRegister } from "../../types/authen";
 
 // components
 import TextInput from "../../../../components/App/TextField/TextInput";
+
+// api
+import { DepartmentApi } from "../../../company/api/department.api";
+import { PositionApi } from "../../../company/api/position.api";
+
+// types
+import { IDepartment } from "../../../company/types/department";
+import { IPosition } from "../../../company/types/position";
+
 
 const RegisterForm = () => {
     const [user, setUser] = useState<IRegister>(
@@ -19,9 +28,11 @@ const RegisterForm = () => {
             isStaff: false,
             isAdmin: false,
             staffCode: null,
-            positionID: null
+            positionID: undefined
         }
     );
+
+    const [selectedDepartment, setSelectedDepartment] = useState('')
 
     const [isAccept, setIsAccept] = useState<boolean>(false);
 
@@ -30,7 +41,7 @@ const RegisterForm = () => {
         setIsAccept(checked)
     }
 
-    function handleChangeForm(event: React.ChangeEvent<HTMLInputElement>) {
+    function handleChangeForm(event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) {
         const { name, value } = event.target;
         setUser({ ...user, [name]: value });
     };
@@ -48,6 +59,36 @@ const RegisterForm = () => {
         else {
             setUser((prevUser) => ({ ...prevUser, isStaff: checked }));
         }
+    };
+
+    // state datas
+    const [departments, setDepartments] = useState<IDepartment[]>([]);
+    const [positions, setPositions] = useState<IPosition[]>([]);
+    const [filterdPosition, setFilteredPosition] = useState<IPosition[]>([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            const departmentApi = DepartmentApi();
+            const departments = await departmentApi.getDepartments();
+
+            const positionApi = PositionApi();
+            const positions = await positionApi.getPositions();
+
+            setPositions(positions);
+            setFilteredPosition(positions);
+            setDepartments(departments);
+        }
+
+        fetchData();
+    }, []);
+
+    function handleChangeDepartment(event: React.ChangeEvent<HTMLSelectElement>) {
+        const { value } = event.target;
+        setSelectedDepartment(value);
+
+        const filteredPosition = positions.filter(item => item.departmentId === Number(value));
+        setFilteredPosition(filteredPosition);
+
     }
 
     return (
@@ -134,32 +175,37 @@ const RegisterForm = () => {
                 {user.isStaff && (
                     <>
                         <div className="mt-5">
-                            <label htmlFor="choose department">Department</label>
+                            <label htmlFor="choose department">Departments</label>
                             <select
-                                id="countries"
-                                defaultValue=""
+                                id="departments"
+                                value={selectedDepartment}
+                                onChange={handleChangeDepartment}
                                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-800 dark:gray-800 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
-                                <option defaultValue="" selected>Choose a country</option>
-                                <option value="US">United States</option>
-                                <option value="CA">Canada</option>
-                                <option value="FR">France</option>
-                                <option value="DE">Germany</option>
+                                <option defaultValue="" selected>Choose a department</option>
+                                {
+                                    departments.map((department) => (
+                                        <option key={department.id} value={department.id}>{department.name}</option>
+                                    ))
+                                }
                             </select>
                         </div>
 
                         <div className="mt-5">
-                            <label htmlFor="choose">Position</label>
+                            <label htmlFor="choose">Positions</label>
                             <select
-                                id="countries"
-                                defaultValue=""
+                                id="positions"
+                                disabled={selectedDepartment === '' ? true : false}
+                                value={user.positionID ?? undefined}
+                                onChange={handleChangeForm}
                                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-800 dark:gray-800 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
-                                <option defaultValue="D" selected>Choose a country</option>
-                                <option value="US">United States</option>
-                                <option value="CA">Canada</option>
-                                <option value="FR">France</option>
-                                <option value="DE">Germany</option>
+                                <option defaultValue={undefined} selected>Choose a position</option>
+                                {
+                                    filterdPosition.map((position) => (
+                                        <option key={position.id} value={position.id}>{position.name}</option>
+                                    ))
+                                }
                             </select>
                         </div>
 
@@ -178,8 +224,6 @@ const RegisterForm = () => {
                     </>
 
                 )}
-
-
 
                 <div className="mt-5">
                     <hr />

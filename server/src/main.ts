@@ -17,13 +17,18 @@ async function bootstrap() {
     .setTitle("Booking Room Service Web Service API Document")
     .setDescription("API Document")
     .setVersion("0.1")
+    .addBearerAuth()
     .build()
 
   // Create a Swagger document using the application instance and the document configuration
   const document = SwaggerModule.createDocument(app, config);
 
   // Setup Swagger module with the application instance and the Swagger document
-  SwaggerModule.setup('api/swagger/', app, document);
+  SwaggerModule.setup('api/swagger/', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    }
+  });
 
 
   await app.listen(process.env.PORT ?? 3000);

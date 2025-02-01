@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from 'react-redux'
+import { verifyToken } from "../../../reducers/auth/action";
+import { IUserPayload } from "../../../types/interfaces/user.interface";
 
-// hooks
-import useAutheCheck from "../../../hooks/auth/auth";
+interface INavBarProps {
+    auth: Promise<IUserPayload>,
+    dispatch: any
+}
 
-const NavBar = () => {
+
+const NavBar: React.FC<INavBarProps> = ({auth, dispatch}) => {
+    
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [user, setUser] = useState<IUserPayload>()
+
+    useEffect(() => {
+         dispatch(verifyToken());
+    }, [])
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -20,14 +32,20 @@ const NavBar = () => {
     };
 
     const params = new URLSearchParams(window.location.search);
+
     
     // 404 page
     if (params.has('page', '404')) {
         return <></>
     }
 
-    // hook for check authen tication
-    useAutheCheck()
+    auth.then((item) => {
+        setUser(item)
+    })
+
+
+    const userIcon: string = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCkR86gulTcXXP5EYcxCsi5eWOyfXZMmsfDLTsfN4a1_v_WKoI6_EXnzsykAKsbdiaIPM&usqp=CAU"
+    
     
     return (
         <nav className="dark:bg-gray-900 text-white">
@@ -80,9 +98,9 @@ const NavBar = () => {
                         className="flex items-center space-x-2 focus:outline-none"
                         onClick={toggleDropdown}
                     >
-                        <span className="hidden md:inline-block mx-3"><b>User Name</b></span>
+                        <span className="hidden md:inline-block mx-3"><b>{user?.fullName}</b></span>
                         {/* Profile Picture */}
-                        <img src="https://via.placeholder.com/40" alt="Profile" className="w-10 h-10 rounded-full" />
+                        <img src={user?.image || userIcon} alt="Profile" className="w-10 h-10 rounded-full" />
                     </button>
 
                     {/* Dropdown */}
@@ -105,4 +123,10 @@ const NavBar = () => {
     );
 };
 
-export default NavBar;
+const mapStateToProps = function(state: any) {
+    return {
+      auth: state.auth || {}
+    }
+}
+
+export default connect(mapStateToProps)(NavBar);

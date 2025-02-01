@@ -6,7 +6,8 @@ import {
   Patch, 
   Param, 
   Delete, 
-  NotFoundException
+  NotFoundException,
+  Req
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,7 +15,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthenticationDto } from './dto/authen-user.dto'
 import { UserEntity } from './entities/user.entity';
 import { ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
@@ -52,4 +56,10 @@ export class UserController {
   authentication(@Body() authenticationDto: AuthenticationDto) {
     return this.userService.authen(authenticationDto);
   }
+
+  @Get('/token/me')
+  getMe(@Req() req: Request) {
+    return req['userPlayload']
+  };
+
 }
