@@ -46,6 +46,7 @@ export class RoomService {
 }
 
 
+@Injectable()
 export class RoomTypeService {
   constructor(private prisma: PrismaService) {}
 

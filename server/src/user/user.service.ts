@@ -39,10 +39,14 @@ export class UserService {
   }
 
   async findOne(id: number): Promise<UserEntity> {
-    const user = await this.prisma.user.findUnique({ where: { id: id } })
+    console.log(`Test Get Me id: ${id}`);
+    
+    const user = await this.prisma.user.findUnique({ where: { id: id } });
+
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
+
     return new UserEntity(user);
   }
 

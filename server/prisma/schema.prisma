@@ -64,7 +64,7 @@ model Room {
   openTime String
   closeTime String
   bookingDuration Int // store data in minutes
-  deatail String? @db.Text()
+  detail String? @db.Text()
   isActive Boolean @default(true)
 
     // FK to RoomType

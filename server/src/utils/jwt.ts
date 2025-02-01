@@ -12,9 +12,11 @@ export async function generateJwtToken(user: UserEntity) {
   const playload: IJwtPayload = {
     id: user.id,
     username: user.username,
+    fullName: user.fullName,
     isStaff: user.isStaff,
     isAdmin: user.isAdmin,
-    staffCode: user.staffCode ?? null
+    staffCode: user.staffCode ?? null,
+    image: user.image
   };
 
   // Token expiration time

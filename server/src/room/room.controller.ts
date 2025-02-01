@@ -4,9 +4,16 @@ import { CreateRoomDto, CreateRoomTypeDto } from './dto/create-room.dto';
 import { UpdateRoomDto, UpdateRoomTypeDto } from './dto/update-room.dto';
 import { ApiResponse } from '@nestjs/swagger';
 
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+
+
+
+
 // entities
 import { RoomEntity, RoomTypeEntity } from './entities/room.entity';
 
+
+@ApiBearerAuth()
 @Controller('room')
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
@@ -41,6 +48,7 @@ export class RoomController {
   }
 }
 
+@ApiBearerAuth()
 @Controller('room-type')
 export class RoomTypeController {
   constructor(private readonly roomTypeService: RoomTypeService) {}
